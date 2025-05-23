@@ -1,4 +1,4 @@
-from typing import Annotated, ClassVar
+from typing import Annotated, ClassVar, List
 
 from pydantic import BeforeValidator
 from pydantic_settings import (
@@ -28,6 +28,7 @@ IntMapStr = Annotated[int, BeforeValidator(convert_str2int)]
 
 class AppSettings(BaseSettings):
     path_to_modelfile: str
+    feature_names: List[str]
 
     model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
         json_file=(

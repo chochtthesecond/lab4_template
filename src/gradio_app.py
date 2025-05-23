@@ -1,42 +1,61 @@
 import gradio as gr
 import joblib
 import numpy as np
+import pandas as pd
 
 from config import app_config
 
 model = joblib.load(app_config.path_to_modelfile)
+FEATURE_NAMES = app_config.feature_names
+CLASS_NAMES_MAP = {
+    1: 'Mammal',
+    2: 'Bird',
+    3: 'Reptile',
+    4: 'Fish',
+    5: 'Amphibian',
+    6: 'Bug',
+    7: 'Invertebrate'
+}
 
 
 # Функция для инференса
-def predict_species(sepal_length, sepal_width, petal_length, petal_width):
-    # Преобразование входных данных в массив
-    input_data = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+def predict_species(legs,*checks):
+    processed_checks = [int(c) for c in checks]
+    input_values = [legs] + processed_checks
+
+    # Создание Pandas DataFrame с именами признаков
+    input_df = pd.DataFrame([input_values], columns=FEATURE_NAMES)
+
     # Предсказание
-    prediction = model.predict(input_data)
-    # Возвращаем метку класса
-    return prediction
+    prediction = model.predict(input_df)
+
+    numeric_pred = 0 # Default or error value
+    numeric_pred = int(prediction[0])
+
+    class_name = CLASS_NAMES_MAP.get(numeric_pred, f"Unknown class ({numeric_pred})")
+    
+    return class_name
 
 
 # Создание интерфейса с gr.Blocks
-with gr.Blocks(title="Инференс модели Iris") as demo:
-    gr.Markdown("## 🌸 Прогнозирование вида ириса на основе признаков")
+with gr.Blocks(title="Инференс модели") as demo:
+    gr.Markdown("## 🐾 Прогнозирование вида животного")
 
     with gr.Row():
         # Входные слайдеры для признаков
         # Можно определить текстовые поля для ввода
-        sepal_length = gr.Slider(
-            minimum=0, maximum=10, step=0.1, label="Длина чашелистика (см)"
+        labels=['hair','feathers','eggs','milk','airborne','aquatic','predator','toothed','backbone','breathes','venomous','fins','legs','tail','domestic','catsize']
+        checks=[]
+        for x in labels:
+            if x=='legs': break
+            checks.append(gr.Checkbox(label=x))
+        legs = gr.Slider(
+            minimum=0, maximum=8, step=1, label="legs"
         )
-        sepal_width = gr.Slider(
-            minimum=0, maximum=5, step=0.1, label="Ширина чашелистика (см)"
-        )
-        petal_length = gr.Slider(
-            minimum=0, maximum=10, step=0.1, label="Длина лепестка (см)"
-        )
-        petal_width = gr.Slider(
-            minimum=0, maximum=5, step=0.1, label="Ширина лепестка (см)"
-        )
-
+        checks.append(legs)
+        for x in labels[13:]:
+            checks.append(gr.Checkbox(label=x))
+            
     # Кнопка для запуска инференса
     predict_btn = gr.Button("Предсказать вид")
 
@@ -46,7 +65,7 @@ with gr.Blocks(title="Инференс модели Iris") as demo:
     # Связь кнопки и функции
     predict_btn.click(
         fn=predict_species,
-        inputs=[sepal_length, sepal_width, petal_length, petal_width],
+        inputs=[*checks],
         outputs=result,
     )
 

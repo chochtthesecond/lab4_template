@@ -4,15 +4,10 @@ services:
       context: .
       dockerfile: dockerfile/Dev.Dockerfile
     ports:
-      - 8000:5000
+      - 7860:7860
     command:
-      - uvicorn
-      - src.app:app
-      - --reload
-      - --host
-      - 0.0.0.0
-      - --port
-      - "5000"
+      - python
+      - src/gradio_app.py
     volumes:
       - ./src/:/app/src/
       - ./models/:/app/models/

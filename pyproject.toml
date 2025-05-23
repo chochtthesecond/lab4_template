@@ -5,7 +5,7 @@ description = "Шаблон для создания лабораторной р�
 authors = [
     {name = "Your Name",email = "you@example.com"}
 ]
-readme = "README.md"
+
 requires-python = ">=3.11,<3.13"
 dependencies = [
     "gradio (>=5.28.0,<6.0.0)",

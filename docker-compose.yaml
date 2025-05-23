@@ -7,4 +7,4 @@ services:
       - ./config.json:/app/config.json
       - ./models/:/app/models/
     ports:
-      - 8000:5000
+      - 7860:7860

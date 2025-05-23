@@ -1,3 +1,21 @@
 {
-  "path_to_modelfile": "./models/stub.joblib"
+  "path_to_modelfile": "./models/knn.joblib",
+  "feature_names": [
+        "hair",
+        "feathers",
+        "eggs",
+        "milk",
+        "airborne",
+        "aquatic",
+        "predator",
+        "toothed",
+        "backbone",
+        "breathes",
+        "venomous",
+        "fins",
+        "legs",
+        "tail",
+        "domestic",
+        "catsize"
+    ]
 }
